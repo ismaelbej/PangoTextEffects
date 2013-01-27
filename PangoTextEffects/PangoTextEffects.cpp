@@ -4,6 +4,17 @@
 #include <pango/pango.h>
 #include <pango/pangocairo.h>
 
+void pango_render_text_simple(cairo_t *context, PangoLayout *layout)
+{
+	cairo_new_path(context);
+	cairo_move_to(context, 15.0, 10.0);
+
+	pango_cairo_layout_path(context, layout);
+
+	cairo_set_source_rgb(context, 0.9, 0.1, 0.8);
+	cairo_fill(context);
+}
+
 void pango_render_text(char* message)
 {
 	cairo_surface_t *surface;
@@ -30,20 +41,12 @@ void pango_render_text(char* message)
 
 	pango_cairo_update_layout(context, layout);
 
-	cairo_new_path(context);
-	cairo_move_to(context, 15.0, 10.0);
-
-	pango_cairo_layout_path(context, layout);
-
-	cairo_set_source_rgb(context, 0.9, 0.1, 0.8);
-	cairo_fill(context);
-
-	g_object_unref(layout);
-
-	cairo_destroy(context);
+	pango_render_text_simple(context, layout);
 
 	cairo_status_t status = cairo_surface_write_to_png(surface, "pango-text-effects.png");
 
+	g_object_unref(layout);
+	cairo_destroy(context);
 	cairo_surface_destroy(surface);
 }
 
