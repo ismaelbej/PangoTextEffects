@@ -32,6 +32,41 @@ void pango_render_text_border(cairo_t *context, PangoLayout *layout)
 	cairo_fill(context);
 }
 
+void pango_render_text_shadow(cairo_t *context, PangoLayout *layout)
+{
+	cairo_push_group(context);
+
+	cairo_new_path(context);
+	cairo_move_to(context, 15.0+8.0, 10.0+8.0);
+
+	pango_cairo_layout_path(context, layout);
+
+	cairo_set_line_width(context, 6.0);
+	cairo_set_miter_limit(context, 2.0);
+
+	cairo_set_source_rgb(context, 0.0, 0.0, 0.0);
+	cairo_stroke_preserve(context);
+
+	cairo_fill(context);
+
+	cairo_pop_group_to_source(context);
+	cairo_paint_with_alpha(context, 0.6);
+
+	cairo_new_path(context);
+	cairo_move_to(context, 15.0, 10.0);
+
+	pango_cairo_layout_path(context, layout);
+
+	cairo_set_line_width(context, 6.0);
+	cairo_set_miter_limit(context, 2.0);
+
+	cairo_set_source_rgb(context, 0.0, 0.3, 0.9);
+	cairo_stroke_preserve(context);
+
+	cairo_set_source_rgb(context, 0.9, 0.1, 0.8);
+	cairo_fill(context);
+}
+
 void pango_render_text(char* message)
 {
 	cairo_surface_t *surface;
@@ -59,7 +94,8 @@ void pango_render_text(char* message)
 	pango_cairo_update_layout(context, layout);
 
 	//pango_render_text_simple(context, layout);
-	pango_render_text_border(context, layout);
+	//pango_render_text_border(context, layout);
+	pango_render_text_shadow(context, layout);
 
 	cairo_status_t status = cairo_surface_write_to_png(surface, "pango-text-effects.png");
 
